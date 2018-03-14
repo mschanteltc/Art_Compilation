@@ -26,7 +26,7 @@ int resultCounts;
 void setup() {
   size(1200, 800);
   artworks = loadJSONArray("data_compressed.json");
-  resultCounts = artworks.size();
+  resultCounts = 100; //artworks.size();
   cols = (int)ceil((float)resultCounts/rows);
   covers = new PImage[resultCounts];
   scrollB = new HScrollbar(0, height-8, width, 16, 8);

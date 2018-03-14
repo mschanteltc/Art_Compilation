@@ -36,6 +36,18 @@ class HScrollbar {
     if (!mousePressed) {
       locked = false;
     }
+    if (keyPressed) {
+      if (key==CODED) {
+
+        if (keyCode == RIGHT) {
+          newspos = constrain(spos+2, sposMin, sposMax);
+        }
+
+        if (keyCode == LEFT) {
+          newspos = spos-2;
+        }
+      }
+    }
     if (locked) {
       newspos = constrain(mouseX-sheight/2, sposMin, sposMax);
     }
@@ -50,7 +62,7 @@ class HScrollbar {
 
   boolean overEvent() {
     if (mouseX > xpos && mouseX < xpos+swidth &&
-       mouseY > ypos && mouseY < ypos+sheight) {
+      mouseY > ypos && mouseY < ypos+sheight) {
       return true;
     } else {
       return false;
