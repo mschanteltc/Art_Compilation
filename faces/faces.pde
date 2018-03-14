@@ -14,9 +14,10 @@ Name: Chantel Chan
  */
 
 PImage[] covers;
+PImage art;
 HScrollbar scrollB;
 JSONArray artworks;
-int rows = 6;
+int rows = 5;
 int cols;
 int resultCounts;
 
@@ -25,16 +26,26 @@ int resultCounts;
 void setup() {
   size(1200, 800);
   artworks = loadJSONArray("data_compressed.json");
-  resultCounts = artworks.size()/4;
-  cols = ceil(resultCounts/6);
+  resultCounts = artworks.size();
+  cols = (int)ceil((float)resultCounts/rows);
   covers = new PImage[resultCounts];
   scrollB = new HScrollbar(0, height-8, width, 16, 8);
+  
+  /* I saved the thumbnail PNG's locally on my disk to save processing time
   for (int i =0; i<resultCounts; i++) 
   {
     String imageURL = artworks.getJSONObject(i).getString("ThumbnailURL");
     covers[i] = loadImage(imageURL);
-    println(resultCounts-i);
+    covers[i].save(str(i)+".png");
+    println(resultCounts-i); //print countdown
   }
+  */
+  
+  for (int i=0; i<resultCounts; i++){
+    covers[i] = loadImage(str(i)+".png");
+  }
+  float time = (float)millis()/1000;
+  println(time + " seconds");
 }
 
 void draw() {
@@ -57,13 +68,16 @@ void draw() {
         text(title, 10, 20);
         text(artist, 10, 40);
         text(year, 10, 60);
-      }//prin
+      }
+      
       scrollB.update();
       scrollB.display();
+      
       if (index>=resultCounts) {
         break;
       }
       index +=1;
+      
     }
   }
 }
