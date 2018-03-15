@@ -18,16 +18,19 @@ PImage[] covers;
 PImage art;
 HScrollbar scrollB;
 JSONArray artworks;
-int rows = 5;
+
+int indexStart=3570;
+int rows = 4;
 int cols;
 int resultCounts;
+
 StringList pix = new StringList();
 
 void setup() {
   size(1200, 800);
   artworks = loadJSONArray("data_compressed.json");
-  resultCounts = 100; //artworks.size();
-  cols = (int)ceil((float)resultCounts/rows);
+  resultCounts = 100; //must be multiple of 4
+  cols = (int)ceil(resultCounts/rows);
   covers = new PImage[resultCounts];
   scrollB = new HScrollbar(0, height-8, width, 16, 8);
 
@@ -41,10 +44,10 @@ void setup() {
    }
    */
 
-  for (int i=0; i<resultCounts; i++) {
-    covers[i] = loadImage(str(i)+".png");
-    covers[i].loadPixels();
-    int[] sortPix = sort(covers[i].pixels);
+  for (int i=indexStart; i<resultCounts+indexStart; i++) {
+    covers[i-indexStart] = loadImage(str(i)+".png");
+    covers[i-indexStart].loadPixels();
+    int[] sortPix = sort(covers[i-indexStart].pixels);
     String numArray = join(nf(sortPix, 0), ", "); 
     pix.append(numArray);
   }
@@ -55,32 +58,33 @@ void setup() {
 
 void draw() {
   background(255);
+  textAlign(CENTER);
   noStroke();
   colorMode(RGB);
-  int index = 0;
+  int index = indexStart;
   float imgPos = scrollB.getPos();
   for (int i =0; i<rows; i++) {
     for (int j =0; j<cols; j++) {
+      PImage thisArt = covers[index-indexStart];
       String title = artworks.getJSONObject(index).getString("Title");
       String[] artists = artworks.getJSONObject(index).getJSONArray("Artist").getStringArray();
       String artist = join(artists, ", ");
       String year = artworks.getJSONObject(index).getString("Date");
-      String colorVal = pix.get(index);
+      String colorVal = pix.get(index-indexStart);
       String[] valuesList = split(colorVal, ", ");
       int colorLength = valuesList.length;
+      
 
-      image(covers[index], 100*j-(100*imgPos*cols/width)+imgPos, 150+(100*i), 100, 100);
-
-      if ((100*j-(100*imgPos*cols/width)+imgPos < mouseX) 
-        && (mouseX < 100*(j+1)-(100*imgPos*cols/width)+imgPos) 
-        && (150+(100*i) < mouseY) 
-        &&(mouseY < 150+(100*(i+1))) ) {
-        text(title, 10, 20);
-        text(artist, 10, 40);
-        text(year, 10, 60);
-        fill(0);
-        ellipse(700, 100, 150, 150);
-        //text(hex(int(valuesList[(int)5000])), 10, 80);
+      if ((80*j-(80*imgPos*cols/width)+imgPos < mouseX) 
+        && (mouseX < 80*(j+1)-(80*imgPos*cols/width)+imgPos) 
+        && (400+(80*i) < mouseY) 
+        &&(mouseY < 400+(80*(i+1))) ) {
+        image(thisArt, 80*j-(80*imgPos*cols/width)+imgPos-10, 400+(80*i)-10, 100, 100);
+        //image(thisArt, 80*j-(80*imgPos*cols/width)+imgPos-10, 400+(80*i)-10, 100, 100);
+        text(title, width/2, 20);
+        text(artist, width/2, 40);
+        text(year, width/2, 60);
+        
         for (float k=0; k < colorLength; k++) {
           float start = TWO_PI*(k/colorLength);
           float end = TWO_PI*((k+1)/colorLength);
@@ -88,14 +92,18 @@ void draw() {
           float g = green(int(valuesList[(int)k]));
           float b = blue(int(valuesList[(int)k]));
           fill(r, g, b);
-          arc(700, 100, 150, 150, start, end);
+          arc(200, 200, 375, 375, start, end);
         }
+        
+      }
+      else{
+        image(thisArt, 80*j-(80*imgPos*cols/width)+imgPos, 400+(80*i), 80, 80);
       }
 
       scrollB.update();
       scrollB.display();
 
-      if (index>=resultCounts) {
+      if (index-indexStart >= resultCounts) {
         break;
       }
 
