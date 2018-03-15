@@ -13,6 +13,7 @@ Name: Chantel Chan
  2. Load the pictures beforehand. 
  */
 
+import java.util.*;
 PImage[] covers;
 PImage art;
 HScrollbar scrollB;
@@ -20,8 +21,7 @@ JSONArray artworks;
 int rows = 5;
 int cols;
 int resultCounts;
-
-
+StringList pix = new StringList();
 
 void setup() {
   size(1200, 800);
@@ -30,20 +30,25 @@ void setup() {
   cols = (int)ceil((float)resultCounts/rows);
   covers = new PImage[resultCounts];
   scrollB = new HScrollbar(0, height-8, width, 16, 8);
-  
+
   /* I saved the thumbnail PNG's locally on my disk to save processing time
-  for (int i =0; i<resultCounts; i++) 
-  {
-    String imageURL = artworks.getJSONObject(i).getString("ThumbnailURL");
-    covers[i] = loadImage(imageURL);
-    covers[i].save(str(i)+".png");
-    println(resultCounts-i); //print countdown
-  }
-  */
-  
-  for (int i=0; i<resultCounts; i++){
+   for (int i =0; i<resultCounts; i++) 
+   {
+   String imageURL = artworks.getJSONObject(i).getString("ThumbnailURL");
+   covers[i] = loadImage(imageURL);
+   covers[i].save(str(i)+".png");
+   println(resultCounts-i); //print countdown
+   }
+   */
+
+  for (int i=0; i<resultCounts; i++) {
     covers[i] = loadImage(str(i)+".png");
+    covers[i].loadPixels();
+    int[] sortPix = sort(covers[i].pixels);
+    String numArray = join(nf(sortPix, 0), ", "); 
+    pix.append(numArray);
   }
+
   float time = (float)millis()/1000;
   println(time + " seconds");
 }
@@ -62,22 +67,22 @@ void draw() {
       image(covers[index], 100*j-(100*imgPos*cols/width)+imgPos, 150+(100*i), 100, 100);
 
       if ((100*j-(100*imgPos*cols/width)+imgPos < mouseX) 
-              && (mouseX < 100*(j+1)-(100*imgPos*cols/width)+imgPos) 
-              && (150+(100*i) < mouseY) 
-              &&(mouseY < 150+(100*(i+1))) ) {
+        && (mouseX < 100*(j+1)-(100*imgPos*cols/width)+imgPos) 
+        && (150+(100*i) < mouseY) 
+        &&(mouseY < 150+(100*(i+1))) ) {
         text(title, 10, 20);
         text(artist, 10, 40);
         text(year, 10, 60);
       }
-      
+
       scrollB.update();
       scrollB.display();
-      
+
       if (index>=resultCounts) {
         break;
       }
+
       index +=1;
-      
     }
   }
 }

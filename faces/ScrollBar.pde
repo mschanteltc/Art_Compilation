@@ -36,18 +36,18 @@ class HScrollbar {
     if (!mousePressed) {
       locked = false;
     }
-    if (keyPressed) {
-      if (key==CODED) {
+    //if (keyPressed) {
+    //  if (key==CODED) {
 
-        if (keyCode == RIGHT) {
-          newspos = constrain(spos+2, sposMin, sposMax);
-        }
+    //    if (keyCode == RIGHT) {
+    //      newspos = constrain(spos+2, sposMin, sposMax);
+    //    }
 
-        if (keyCode == LEFT) {
-          newspos = spos-2;
-        }
-      }
-    }
+    //    if (keyCode == LEFT) {
+    //      newspos = constrain(spos-2, sposMin, sposMax);
+    //    }
+    //  }
+    //}
     if (locked) {
       newspos = constrain(mouseX-sheight/2, sposMin, sposMax);
     }
