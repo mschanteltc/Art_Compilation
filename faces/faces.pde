@@ -55,6 +55,8 @@ void setup() {
 
 void draw() {
   background(255);
+  noStroke();
+  colorMode(RGB);
   int index = 0;
   float imgPos = scrollB.getPos();
   for (int i =0; i<rows; i++) {
@@ -63,6 +65,9 @@ void draw() {
       String[] artists = artworks.getJSONObject(index).getJSONArray("Artist").getStringArray();
       String artist = join(artists, ", ");
       String year = artworks.getJSONObject(index).getString("Date");
+      String colorVal = pix.get(index);
+      String[] valuesList = split(colorVal, ", ");
+      int colorLength = valuesList.length;
 
       image(covers[index], 100*j-(100*imgPos*cols/width)+imgPos, 150+(100*i), 100, 100);
 
@@ -73,6 +78,18 @@ void draw() {
         text(title, 10, 20);
         text(artist, 10, 40);
         text(year, 10, 60);
+        fill(0);
+        ellipse(700, 100, 150, 150);
+        //text(hex(int(valuesList[(int)5000])), 10, 80);
+        for (float k=0; k < colorLength; k++) {
+          float start = TWO_PI*(k/colorLength);
+          float end = TWO_PI*((k+1)/colorLength);
+          float r = red(int(valuesList[(int)k]));
+          float g = green(int(valuesList[(int)k]));
+          float b = blue(int(valuesList[(int)k]));
+          fill(r, g, b);
+          arc(700, 100, 150, 150, start, end);
+        }
       }
 
       scrollB.update();
